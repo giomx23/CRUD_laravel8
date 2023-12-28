@@ -29,10 +29,14 @@ Route::get('/', function () {
 // Acceder de manera automatizada a las rutas que se desee
 Route::resource('empleado', EmpleadoController::class)->middleware('auth');
 Auth::routes();
-//Auth::routes(['register'=>false,'reset'=>false]); //para quitar el resgistrado y el olvidar contraseña
-
-Route::get('/home', [EmpleadoController::class, 'index'])->name('home');
+//Auth::routes(['register'=>false,'reset'=>false]); //para quitar el registrado y el olvidar contraseña
 
 Route::group(['middleware'=>'auth'],function(){
     Route::get('/', [EmpleadoController::class, 'index'])->name('home');
+    Route::get('/obteneru', [EmpleadoController::class, 'getusers']);
+    Route::get('obteneru/create', [App\Http\Controllers\EmpleadoController::class, 'create']);
+    Route::post('obteneru', [App\Http\Controllers\EmpleadoController::class, 'store']);
+    Route::get('obteneru/edit', [App\Http\Controllers\EmpleadoController::class, 'edit']);
+    Route::put('datosactualizados', [App\Http\Controllers\EmpleadoController::class, 'update']);
+    Route::delete("obteneru/{id}", [App\Http\Controllers\EmpleadoController::class, "destroy"]);
 });

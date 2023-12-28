@@ -1,5 +1,5 @@
 {{-- Formulario para editar al empleado --}}
-@extends('layouts.app')
+{{-- @extends('layouts.app')
 
 @section('content')
 <div class="container">
@@ -9,4 +9,4 @@
   @include('empleado.form',['manera'=>'Editar']);
 </form>
 </div>
-@endsection
+@endsection --}}

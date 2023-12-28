@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empleado;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -19,10 +20,13 @@ class EmpleadoController extends Controller
      */
     public function index()
     {
-        //
-        //Consulta de datos almacenados en la base de datos
-        $datosAlmacenados['empleados']=Empleado::paginate(1);
-        return view('empleado.index',$datosAlmacenados);
+
+        return view('empleado.index');
+    }
+
+    public function getusers(){
+        $users=Empleado::get();
+        return $users;
     }
 
     /**
@@ -33,7 +37,11 @@ class EmpleadoController extends Controller
     public function create()
     {
         //
-        return view('empleado.create');
+        $data = [
+            'code' => 200,
+            'status' => 'success',
+        ];
+        return response()->json($data, $data['code']);
     }
 
     /**
@@ -46,32 +54,39 @@ class EmpleadoController extends Controller
     {
         //Validar campos
         $vcampos=[
-            'Nombre' => 'required|string|max:50',
-            'ApellidoPaterno' => 'required|string|max:50',
-            'ApellidoMaterno' => 'required|string|max:50',
-            'Correo' => 'required|email',
-            'Foto' => 'required|max:10000|mimes:jpeg,jpg,png',
+            'nombre' => 'required|string|max:50',
+            'apellidop' => 'required|string|max:50',
+            'apellidom' => 'required|string|max:50',
+            'correo' => 'required|email',
         ];
-        //Mensaje que arroja cuando el campo es requerido
-        $mensaje=[
-            'required' => 'El campo :attribute es requerido',
-        ];
+        $this->validate($request,$vcampos);//Validación de campos
 
-        $this->validate($request,$vcampos,$mensaje);//Validación de campos con los mensajes de validación
+        try {
+            $empleado = new Empleado();
+            $empleado->Nombre = $request->nombre;
+            $empleado->ApellidoPaterno = $request->apellidop;
+            $empleado->ApellidoMaterno = $request->apellidom;
+            $empleado->Correo = $request->correo;
+            $empleado->save();
 
-        //$datosEmpleado = $request->all();
-        //obtiene todos los datos del formulario, exceptuando el token para que se guarde en la BD
-        $datosEmpleado = $request->except('_token');
-
-        //Se adjunta la foto a storage->app->public->uploads
-        /*La foto que se suba ya no será de manera temporal (.tmp) sino que se almacena en uploads con formato .jpg*/
-        if($request->hasFile('Foto')){
-            $datosEmpleado['Foto']=$request->file('Foto')->store('uploads','public');
+            if(is_object($empleado)) {
+                $data = [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => '¡Usuario creado de manera exitosa!',
+                    'empleado' => $empleado,
+                ];
+            }
+            return response()->json($data, $data['code']);
+        } catch (\Throwable $th) {
+            $data = [
+                'code' => 400,
+                'status' => 'error',
+                'message' => 'Error al guardar.'.$th,
+            ];
+            return response()->json($data, $data['code']);
         }
-        Empleado::insert($datosEmpleado);
 
-        return redirect('empleado')->with('mensaje','Se ha creado con éxito el empleado');
-        //return response()->json($datosEmpleado);
     }
 
     /**
@@ -91,55 +106,57 @@ class EmpleadoController extends Controller
      * @param  \App\Models\Empleado  $empleado
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit()
     {
-        //
-        $empleado=Empleado::findOrFail($id); //Aquí se busca la información apartir del id para que luego sea modificada
-        return view('empleado.edit',compact('empleado'));
+        $data = [
+            'code' => 200,
+            'status' => 'success',
+        ];
+        return response()->json($data, $data['code']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Empleado  $empleado
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        //return $request;
+        //falta validar request
         //Validar campos
         $vcampos=[
-            'Nombre' => 'required|string|max:50',
-            'ApellidoPaterno' => 'required|string|max:50',
-            'ApellidoMaterno' => 'required|string|max:50',
-            'Correo' => 'required|email',
+            'nombre' => 'required|string|max:50',
+            'apellidop' => 'required|string|max:50',
+            'apellidom' => 'required|string|max:50',
+            'correo' => 'required|email',
         ];
-        //Mensaje que arroja cuando el campo es requerido
-        $mensaje=[
-            'required' => 'El campo :attribute es requerido',
-        ];
+        $this->validate($request, $vcampos);
 
-        if($request->hasFile('Foto')){
-            $campos=['Foto' => 'required|max:10000|mimes:jpeg,jpg,png'];
+        if($request->id)
+            $empleado = Empleado::where('id',$request->input('id'))->first();
+
+        try {
+            if(is_object($empleado)) {
+
+                $empleado->Nombre = $request->nombre;
+                $empleado->ApellidoPaterno = $request->apellidop;
+                $empleado->ApellidoMaterno = $request->apellidom;
+                $empleado->Correo = $request->correo;
+                $empleado->save();
+
+                $data = [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'Empleado editado correctamente',
+                    'empleado' => $empleado,
+                ];
+
+                return response()->json($data, $data['code']);
+            }
+        } catch (\Throwable $th) {
+            $data = [
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Error a la hora de editar al empleado'.$th,
+            ];
+            return response()->json($data, $data['code']);
         }
-
-        $this->validate($request,$vcampos,$mensaje);//Validación de campos con los mensajes de validación
-
-        $datosEmpleado = $request->except(['_token','_method']); //Se quita el token y el metodo ya que no nos servirá a la hora de actualizar
-
-        if($request->hasFile('Foto')){
-            $empleado=Empleado::findOrFail($id); //Se recupera la información
-            Storage::delete('/public/'.$empleado->Foto);
-            $datosEmpleado['Foto']=$request->file('Foto')->store('uploads','public');
-        }
-
-        Empleado::where('id','=', $id)->update($datosEmpleado); //Se busca el registro respecto al id y si existe, se podrá actualizar
-
-        $empleado=Empleado::findOrFail($id); //Aquí se busca la información apartir del id para que luego sea modificada
-
-        //return view('empleado.edit',compact('empleado'));
-
-        return redirect('empleado')->with('mensaje','Se ha modificado con éxito al empleado'); //cuando se borre nos redirecciona nuevamente en el index, en este casa se encuentra en /empleado
     }
 
     /**
@@ -150,14 +167,23 @@ class EmpleadoController extends Controller
      */
     public function destroy($id)
     {
-        //
-        $empleado=Empleado::findOrFail($id); //Se recupera la información
+        $empleado = Empleado::where('id',$id)->first();
 
-        if(Storage::delete('/public/'.$empleado->Foto)){ //Busca dentro la carpeta public/storage/uploads la imagen que se desea eliminar
-            Empleado::destroy($id); //Y si está se elimina
+        if(is_object($empleado)) {
+            $empleado->delete();
+            $data = [
+                'code' => 200,
+                'status' => 'success',
+                'message' => 'Usuario eliminado',
+                'empleado' => $empleado,
+            ];
+        } else {
+            $data = [
+                'code' => 404,
+                'status' => 'error',
+                'message' => 'Erro, algo salió mal',
+            ];
         }
-
-        Empleado::destroy($id);
-        return redirect('empleado')->with('mensaje','Se ha eliminado con éxito al empleado'); //cuando se borre nos redirecciona nuevamente en el index, en este casa se encuentra en /empleado
+        return response()->json($data, $data['code']);
     }
 }

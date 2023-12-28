@@ -1,7 +1,7 @@
 {{-- Formulario que se relaciona con create y edit --}}
 <h3>Formulario para {{$manera}} un nuevo empleado</h3>
 
-@if(count($errors) > 0)
+{{-- @if(count($errors) > 0)
   <div class="alert alert-danger" role="alert">
     <ul>
       @foreach($errors->all() as $error)
@@ -9,9 +9,9 @@
       @endforeach
     </ul>
   </div>
-@endif
+@endif --}}
 
-<div class="form-group">
+{{-- <div class="form-group">
 <label for="Nombre">Nombre: </label>
 <input type="text" class="form-control" name="Nombre" value="{{ isset($empleado->Nombre)?$empleado->Nombre:old('Nombre')}}" id="Nombre">
 <br>
@@ -38,7 +38,7 @@
 <div class="form-group">
 <label for="Foto">Foto: </label>
 {{-- {{$empleado->Foto}} --}}
-@if(isset($empleado->Foto))
+{{-- @if(isset($empleado->Foto))
 <img src="{{asset('storage').'/'.$empleado->Foto}}" class="img-thumbnail img-fluid" width="100px" height="100px" alt="">
 @endif
 <input type="file" class="form-control" name="Foto" id="Foto">
@@ -47,4 +47,4 @@
 
 <input type="submit" class="btn btn-success" value="{{$manera}} Datos" >
 
-<a href="{{url('empleado/')}}" class="btn btn-dark"> Regresar al Inicio </a>
+<a href="{{url('empleado/')}}" class="btn btn-dark"> Regresar al Inicio </a> --}}

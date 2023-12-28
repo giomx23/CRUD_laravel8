@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"  ng-app="@yield('ngApp')">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,8 +18,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- AngularJS -->
+    <script src="{{ asset('js/angular-1.8.2/angular.min.js') }}"></script>
+    <!-- Sweet Alert -->
+    <script src="{{ asset('js/sweetalert2.1.2/sweetalert.min.js') }}"></script>
 </head>
-<body>
+<body ng-controller="@yield('ngController')">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -83,5 +88,14 @@
             @yield('content')
         </main>
     </div>
+    <script src="{{ asset('js/jquery-3.5.1/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-ui-1.13.1/jquery-ui.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-4.6.1/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/fontawesome/all.min.js') }}"></script>
+    <script src="{{ asset('js/dirPagination.js') }}"></script>
+    <script src="{{ asset('js/ng-table.min.js') }}"></script>
+    <!-- Angular File -->
+    @yield('ngFile')
 </body>
 </html>
