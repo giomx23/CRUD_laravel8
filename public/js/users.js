@@ -206,6 +206,4 @@ $scope.delete = function (user_id) {
         }
     );
 }
-
-
 });

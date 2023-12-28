@@ -6,17 +6,6 @@
 @section('content')
 <div class="container">
 
-{{-- Para mostrar mensaje dependiendo de que se haga --}}
-
-  @if(Session::has('mensaje'))
-  <div class="alert alert-success alert-dismissible" role="alert">
-      {{Session::get('mensaje')}}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-  @endif
-
 
 <a ng-click="create()" class="btn btn-success"> Crear nuevo empleado </a>
 <br><br>

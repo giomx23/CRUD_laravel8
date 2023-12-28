@@ -30,7 +30,6 @@ Route::get('/', function () {
 Route::resource('empleado', EmpleadoController::class)->middleware('auth');
 Auth::routes();
 //Auth::routes(['register'=>false,'reset'=>false]); //para quitar el registrado y el olvidar contraseña
-
 Route::group(['middleware'=>'auth'],function(){
     Route::get('/', [EmpleadoController::class, 'index'])->name('home');
     Route::get('/obteneru', [EmpleadoController::class, 'getusers']);

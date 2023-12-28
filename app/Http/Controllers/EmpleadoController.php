@@ -158,7 +158,6 @@ class EmpleadoController extends Controller
             return response()->json($data, $data['code']);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      *
